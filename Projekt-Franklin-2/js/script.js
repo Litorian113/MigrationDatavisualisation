@@ -1,3 +1,10 @@
+// Define months array
+const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+// Global variables to store all dots
+let allDots = [];
+let currentDots = [];
+
 // Erstelle die Szene
 const scene = new THREE.Scene();
 
@@ -89,12 +96,18 @@ addLatLonPoints();
 
 // Funktion zum Hinzufügen von Dots (Punkten) aus dem Datensatz
 function addDots(data) {
+  allDots = []; // Leere Liste für alle Dots
+
   data.forEach(entry => {
     if (entry.Coordinates) {
-      const dot = new Dot(entry.Coordinates); // Verwende die Dot-Klasse
-      scene.add(dot.mesh); // Füge den Punkt zur Szene hinzu
+      const dot = new Dot(entry.Coordinates, entry["Incident year"], entry["Reported Month"]);
+      allDots.push(dot);
+      console.log(`Dot created for ${entry["Incident year"]}, ${entry["Reported Month"]}, Coordinates: ${entry.Coordinates}`);
+      // Do not add the dots to the scene yet, wait for the slider value
     }
   });
+
+  filterDotsBySliderValue(); // Start filtering based on the current slider value
 }
 
 // Datensatz laden (data.json)
@@ -116,6 +129,38 @@ function convertCoordsTo3D(lon, lat) {
     radius * Math.sin(phi) * Math.sin(theta)
   );
 }
+
+// Filter dots by the current slider value
+function filterDotsBySliderValue() {
+  const sliderValue = document.getElementById('dateSlider').value;
+  const year = Math.floor(sliderValue / 12) + 2014;
+  const month = months[sliderValue % 12];
+
+  // Log the current year and month to the console
+  console.log(`Slider position: ${sliderValue} => Date: ${month} ${year}`);
+
+  // Update the displayed date
+  document.getElementById('dateDisplay').innerText = `${month} ${year}`;
+
+  // Remove the current dots from the scene
+  currentDots.forEach(dot => scene.remove(dot.mesh)); 
+  currentDots = allDots.filter(dot => {
+    const dotYear = dot.incidentYear;
+    const dotMonth = dot.incidentMonth;
+
+    // Only keep dots from before or on the selected date
+    return dotYear < year || (dotYear === year && months.indexOf(dotMonth) <= months.indexOf(month));
+  });
+
+  // Log filtered dots
+  console.log(`Filtered ${currentDots.length} dots for ${month} ${year}`);
+
+  // Add the filtered dots to the scene
+  currentDots.forEach(dot => scene.add(dot.mesh)); 
+}
+
+// Slider event listener
+document.getElementById('dateSlider').addEventListener('input', filterDotsBySliderValue);
 
 // Animationsfunktion
 function animate() {

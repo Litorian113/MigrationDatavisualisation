@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Globe with Country Borders and Dots</title>
+  <title>Globe with Country Borders and Time Slider</title>
   <link rel="stylesheet" href="css/style.css" />
   
   <!-- Three.js -->
@@ -18,10 +18,16 @@
 <body>
   <div id="container"></div>
 
+  <!-- Slider for selecting year and month -->
+  <div style="position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); width: 50%;">
+    <input type="range" min="0" max="119" value="0" id="dateSlider" style="width: 100%;">
+    <span id="dateDisplay">January 2014</span>
+  </div>
+
+  <!-- Script for Dot class (only include this once) -->
+  <script src="js/dotClass.js"></script>
+
   <!-- Script for the globe -->
   <script src="js/script.js"></script>
-
-  <!-- Script for Dot class -->
-  <script src="js/dotClass.js"></script> <!-- Dot-Klasse zur Erzeugung von Punkten -->
 </body>
 </html>
