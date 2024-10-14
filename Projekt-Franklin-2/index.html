@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Globe with Country Borders and Time Slider</title>
   <link rel="stylesheet" href="css/style.css" />
-  
+
   <!-- Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <!-- OrbitControls for mouse interaction -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-  <!-- Earcut for shape triangulation (falls benötigt) -->
-  <script src="https://cdn.jsdelivr.net/npm/earcut@2.2.2/dist/earcut.min.js"></script> <!-- earcut.js -->
+  <!-- Load dot.js and label.js before script.js -->
+  <script src="js/dotClass.js"></script> <!-- Include dot.js for the Dot functionality -->
 </head>
 <body>
   <div id="container"></div>
@@ -24,10 +24,7 @@
     <span id="dateDisplay">January 2014</span>
   </div>
 
-  <!-- Script for Dot class (only include this once) -->
-  <script src="js/dotClass.js"></script>
-
-  <!-- Script for the globe -->
+  <!-- Script for the globe (script.js) -->
   <script src="js/script.js"></script>
 </body>
 </html>

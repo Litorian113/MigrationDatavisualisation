@@ -1,5 +1,5 @@
 class Dot {
-  constructor(coordinates, incidentYear, incidentMonth) {
+  constructor(coordinates, incidentYear, incidentMonth, totalDeadAndMissing) {
     this.incidentYear = incidentYear;
     this.incidentMonth = incidentMonth;
 
@@ -9,11 +9,30 @@ class Dot {
     // Log to ensure coordinates are correctly parsed
     console.log(`Creating dot for ${incidentYear}, ${incidentMonth} at coordinates: ${lat}, ${lon}`);
 
-    // Material for the dot (red)
-    this.material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    // Set color and size based on the number of dead and missing
+    let color;
+    let size;
 
-    // Geometry for the dot (very small)
-    this.geometry = new THREE.SphereGeometry(0.002, 8, 8);
+    if (totalDeadAndMissing < 3) {
+      color = 0xFF4D00; // Yellow
+      size = 0.005; // Small size
+    } else if (totalDeadAndMissing <= 15) {
+      color = 0xFF1F00; // Orange
+      size = 0.008; // Medium size
+    } else {
+      color = 0xF10000; // Red
+      size = 0.01; // Large size
+    }
+
+    // Material for the dot with transparency
+    this.material = new THREE.MeshBasicMaterial({
+      color: color,
+      transparent: true,
+      opacity: 0.2, // Set the opacity to 2% for heatmap effect
+    });
+
+    // Geometry for the dot with varying size
+    this.geometry = new THREE.SphereGeometry(size, 8, 8);
 
     // Create the mesh and position it on the globe
     this.mesh = new THREE.Mesh(this.geometry, this.material);

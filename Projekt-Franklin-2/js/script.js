@@ -5,10 +5,10 @@ const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 let allDots = [];
 let currentDots = [];
 
-// Erstelle die Szene
+// Scene setup
 const scene = new THREE.Scene();
 
-// Erstelle die Kamera (FOV, Seitenverhältnis, nahe und ferne Clipping-Ebenen)
+// Camera setup (FOV, aspect ratio, near and far clipping planes)
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 2;
 
@@ -17,30 +17,30 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('container').appendChild(renderer.domElement);
 
-// Licht hinzufügen
+// Light source
 const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(5, 5, 5).normalize();
 scene.add(light);
 
-// Kugelgeometrie erstellen (Radius, Segmente in Breite, Segmente in Höhe)
+// Create globe geometry (radius, width segments, height segments)
 const geometry = new THREE.SphereGeometry(1, 64, 64);
 
-// Material für den schwarzen Globus
+// Material for the black globe
 const globeMaterial = new THREE.MeshBasicMaterial({
-  color: 0x000000, // Setzt die Farbe des Globus auf Schwarz
-  wireframe: false, // Entfernt das Drahtgitter
+  color: 0x000000, // Set globe color to black
+  wireframe: false, // Disable wireframe
 });
 
-// Mesh (schwarze Kugel) erstellen
+// Create mesh (black sphere)
 const globe = new THREE.Mesh(geometry, globeMaterial);
 scene.add(globe);
 
-// OrbitControls für die Maussteuerung hinzufügen
+// OrbitControls for mouse interaction
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true; // Trägheitseffekt
-controls.dampingFactor = 0.05; // Stärke des Dämpfungseffekts
+controls.enableDamping = true; // Adds an inertia effect when dragging
+controls.dampingFactor = 0.05; // Strength of the damping effect
 
-// GeoJSON-Daten laden (z.B. Natural Earth Grenzdaten für Ländergrenzen)
+// Load GeoJSON data for country borders
 fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json')
   .then(response => response.json())
   .then(data => {
@@ -55,7 +55,7 @@ fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.g
     });
   });
 
-// Funktion zum Zeichnen der Ländergrenzen
+// Function to draw country borders
 function drawBorders(polygon, borderMaterial) {
   polygon.forEach(path => {
     const points = path.map(([lon, lat]) => convertCoordsTo3D(lon, lat));
@@ -65,12 +65,12 @@ function drawBorders(polygon, borderMaterial) {
   });
 }
 
-// Funktion zum Hinzufügen von Punkten auf Breiten- und Längengraden
+// Function to add latitude and longitude grid points
 function addLatLonPoints() {
-  const pointMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff }); // Weiße Punkte
-  const pointGeometry = new THREE.SphereGeometry(0.0025, 8, 8); // Sehr kleine Kugeln als Punkte
+  const pointMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff }); // White points
+  const pointGeometry = new THREE.SphereGeometry(0.0025, 8, 8); // Small spheres as points
 
-  // Breitenkreise (von -90 bis 90 Grad in 10-Grad-Schritten)
+  // Add points at latitude and longitude intersections
   for (let lat = -90; lat <= 90; lat += 10) {
     for (let lon = -180; lon <= 180; lon += 10) {
       const pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
@@ -79,47 +79,14 @@ function addLatLonPoints() {
       scene.add(pointMesh);
     }
   }
-
-  // Längenkreise (von -180 bis 180 Grad in 10-Grad-Schritten)
-  for (let lon = -180; lon <= 180; lon += 10) {
-    for (let lat = -90; lat <= 90; lat += 10) {
-      const pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
-      const position = convertCoordsTo3D(lon, lat);
-      pointMesh.position.copy(position);
-      scene.add(pointMesh);
-    }
-  }
 }
 
-// Punkte auf Breiten- und Längengraden hinzufügen
+// Add points on latitude and longitude grid
 addLatLonPoints();
 
-// Funktion zum Hinzufügen von Dots (Punkten) aus dem Datensatz
-function addDots(data) {
-  allDots = []; // Leere Liste für alle Dots
-
-  data.forEach(entry => {
-    if (entry.Coordinates) {
-      const dot = new Dot(entry.Coordinates, entry["Incident year"], entry["Reported Month"]);
-      allDots.push(dot);
-      console.log(`Dot created for ${entry["Incident year"]}, ${entry["Reported Month"]}, Coordinates: ${entry.Coordinates}`);
-      // Do not add the dots to the scene yet, wait for the slider value
-    }
-  });
-
-  filterDotsBySliderValue(); // Start filtering based on the current slider value
-}
-
-// Datensatz laden (data.json)
-fetch('./data/data.json') // Der Pfad zur data.json im data-Ordner
-  .then(response => response.json())
-  .then(data => {
-    addDots(data); // Punkte aus dem Datensatz erzeugen und hinzufügen
-  });
-
-// Funktion zur Umwandlung von geografischen Koordinaten (Lon/Lat) in 3D-Koordinaten auf einer Kugel
+// Function to convert geographic coordinates (Lon/Lat) to 3D positions on a sphere
 function convertCoordsTo3D(lon, lat) {
-  const radius = 1.01; // Die Punkte und Ländergrenzen werden leicht über der Kugel gezeichnet
+  const radius = 1.01; // Slightly above the globe for better visibility
   const phi = (90 - lat) * (Math.PI / 180);
   const theta = (lon + 180) * (Math.PI / 180);
 
@@ -130,49 +97,64 @@ function convertCoordsTo3D(lon, lat) {
   );
 }
 
-// Filter dots by the current slider value
+// Add Dots from the dataset
+function addDots(data) {
+  allDots = []; // Clear the list of dots
+
+  data.forEach(entry => {
+    if (entry.Coordinates) {
+      const dot = new Dot(entry.Coordinates, entry["Incident year"], entry["Reported Month"], entry["Total Number of Dead and Missing"]);
+      allDots.push(dot);
+      // console.log(`Dot created for ${entry["Incident year"]}, ${entry["Reported Month"]}, Coordinates: ${entry.Coordinates}`);
+    }
+  });
+
+  filterDotsBySliderValue(); // Filter based on the slider value initially
+}
+
+// Load data from data.json
+fetch('./data/data.json')
+  .then(response => response.json())
+  .then(data => {
+    addDots(data); // Create and add dots from the dataset
+  });
+
+// Filter dots based on the current slider value
 function filterDotsBySliderValue() {
   const sliderValue = document.getElementById('dateSlider').value;
   const year = Math.floor(sliderValue / 12) + 2014;
   const month = months[sliderValue % 12];
 
-  // Log the current year and month to the console
-  console.log(`Slider position: ${sliderValue} => Date: ${month} ${year}`);
-
   // Update the displayed date
   document.getElementById('dateDisplay').innerText = `${month} ${year}`;
 
-  // Remove the current dots from the scene
-  currentDots.forEach(dot => scene.remove(dot.mesh)); 
+  // Remove current dots from the scene
+  currentDots.forEach(dot => scene.remove(dot.mesh));
   currentDots = allDots.filter(dot => {
     const dotYear = dot.incidentYear;
     const dotMonth = dot.incidentMonth;
-
-    // Only keep dots from before or on the selected date
     return dotYear < year || (dotYear === year && months.indexOf(dotMonth) <= months.indexOf(month));
   });
 
-  // Log filtered dots
-  console.log(`Filtered ${currentDots.length} dots for ${month} ${year}`);
-
-  // Add the filtered dots to the scene
-  currentDots.forEach(dot => scene.add(dot.mesh)); 
+  // Add filtered dots to the scene
+  currentDots.forEach(dot => scene.add(dot.mesh));
 }
 
 // Slider event listener
 document.getElementById('dateSlider').addEventListener('input', filterDotsBySliderValue);
 
-// Animationsfunktion
+// Animation loop
 function animate() {
   requestAnimationFrame(animate);
-  controls.update(); // Für Damping-Effekte
+  controls.update(); // Update controls for smooth movement
+
   renderer.render(scene, camera);
 }
 
-// Starte die Animation
+// Start the animation
 animate();
 
-// Wenn das Fenster verändert wird, passe die Kamera und den Renderer an
+// Handle window resizing
 window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
   camera.aspect = window.innerWidth / window.innerHeight;

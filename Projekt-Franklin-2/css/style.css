@@ -12,3 +12,14 @@ html, body {
     align-items: center;
   }
   
+  .label {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    padding: 5px;
+    color: white;
+    position: absolute;
+    white-space: nowrap;
+  }
+  
