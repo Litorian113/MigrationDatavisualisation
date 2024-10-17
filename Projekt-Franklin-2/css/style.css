@@ -32,7 +32,6 @@ html, body {
     left: 20px;
     width: 400px;
     padding: 15px;
-    background-color: rgba(0, 0, 0, 0.9); /* Slightly transparent background */
     color: white;
     z-index: 1000; /* Make sure it's above the globe */
     border-radius: 10px;
