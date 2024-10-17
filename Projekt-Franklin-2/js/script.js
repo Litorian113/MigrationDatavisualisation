@@ -1,9 +1,16 @@
 // Define months array
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-// Global variables to store all dots
+// Global variables to store all dots and current filter states
 let allDots = [];
-let currentDots = [];
+let currentFatalityFilter = "All"; // Default to 'All'
+let currentGenderFilter = "All"; // Default to 'All'
+
+// Default color settings
+const colorMapping = {
+    "default": 0xff6347,  // Original dot color
+    "grey": 0x808080     // Grey color for non-selected dots
+};
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -97,20 +104,154 @@ function convertCoordsTo3D(lon, lat) {
   );
 }
 
-// Add Dots from the dataset
+// Function to add Dots from the dataset and store them in allDots array
 function addDots(data) {
   allDots = []; // Clear the list of dots
 
   data.forEach(entry => {
-    if (entry.Coordinates) {
-      const dot = new Dot(entry.Coordinates, entry["Incident year"], entry["Reported Month"], entry["Total Number of Dead and Missing"]);
-      allDots.push(dot);
-      // console.log(`Dot created for ${entry["Incident year"]}, ${entry["Reported Month"]}, Coordinates: ${entry.Coordinates}`);
+    if (entry.Coordinates && entry["Total Number of Dead and Missing"] !== undefined) {
+      const [lat, lon] = entry.Coordinates.split(',').map(coord => parseFloat(coord.trim())); // Split and parse coordinates
+      
+      // Determine the size and color of the dot based on "Total Number of Dead and Missing"
+      const totalDeadMissing = entry["Total Number of Dead and Missing"];
+      let size = 0.002; // Default smaller size
+      let color = 0x8b0000; // Default darker red
+
+      if (totalDeadMissing >= 3 && totalDeadMissing <= 20) {
+        size = 0.005; // Medium size
+        color = 0xff4500; // Medium red
+      } else if (totalDeadMissing > 20) {
+        size = 0.01; // Larger size
+        color = 0xff6347; // Brighter red
+      }
+      
+      // Create a transparent dot with different colors based on size
+      const dotMaterial = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.6 });
+      const dotGeometry = new THREE.SphereGeometry(size, 8, 8); // Adjust size based on categories
+      const dotMesh = new THREE.Mesh(dotGeometry, dotMaterial);
+      
+      // Convert geographic coordinates to 3D positions on the globe
+      const position = convertCoordsTo3D(lon, lat);
+      dotMesh.position.copy(position);
+
+      // Add cause of death and gender info to userData for filtering
+      dotMesh.userData.causeOfDeath = entry["Cause of Death"];
+      dotMesh.userData.originalColor = color; // Save the original color for future restoration
+      dotMesh.userData.numFemales = entry["Number of Females"];
+      dotMesh.userData.numMales = entry["Number of Males"];
+      dotMesh.userData.numChildren = entry["Number of Children"];
+
+      // Store all dots in memory
+      allDots.push(dotMesh);
+      scene.add(dotMesh); // Add dot to the scene
     }
   });
-
-  filterDotsBySliderValue(); // Filter based on the slider value initially
 }
+
+// Function to apply both Fatality and Gender filters
+function applyFilters() {
+    allDots.forEach(dot => {
+        const causeOfDeath = dot.userData.causeOfDeath;
+        const numFemales = dot.userData.numFemales;
+        const numMales = dot.userData.numMales;
+        const numChildren = dot.userData.numChildren;
+
+        // Check Fatality filter
+        const fatalityMatch = (currentFatalityFilter === "All" || causeOfDeath === currentFatalityFilter);
+
+        // Check Gender filter
+        let genderMatch = true; // Default to true for 'All'
+        if (currentGenderFilter === "Women") {
+            genderMatch = (numFemales > 0);
+        } else if (currentGenderFilter === "Men") {
+            genderMatch = (numMales > 0);
+        } else if (currentGenderFilter === "Children") {
+            genderMatch = (numChildren > 0);
+        }
+
+        // Apply filters
+        if (fatalityMatch && genderMatch) {
+            dot.material.color.setHex(dot.userData.originalColor);  // Restore original color from userData
+        } else {
+            dot.material.color.setHex(colorMapping["grey"]);  // Turn other dots grey
+        }
+    });
+}
+
+// Store buttons in variables for Fatality
+const fatalityButtons = {
+    "All": document.getElementById('fatalityAll'),
+    "Mixed or unknown": document.getElementById('fatalityUnknown'),
+    "Violence": document.getElementById('fatalityViolence'),
+    "Drowning": document.getElementById('fatalityDrowning'),
+    "Harsh environmental conditions / lack of adequate shelter, food, water": document.getElementById('fatalityHarsh'),
+    "Accidental death": document.getElementById('fatalityAccident'),
+    "Sickness / lack of access to adequate healthcare": document.getElementById('fatalitySickness'),
+    "Vehicle accident / death linked to hazardous transport": document.getElementById('fatalityVehicle'),
+};
+
+// Attach event listeners to Fatality buttons
+Object.keys(fatalityButtons).forEach(key => {
+    fatalityButtons[key].addEventListener('click', () => {
+        currentFatalityFilter = key;  // Set current fatality filter
+        applyFilters();  // Apply the filters
+    });
+});
+
+// Store buttons in variables for Gender
+const genderButtons = {
+    "All": document.getElementById('genderAll'),
+    "Women": document.getElementById('genderWomen'),
+    "Men": document.getElementById('genderMen'),
+    "Children": document.getElementById('genderChildren')
+};
+
+// Attach event listeners to Gender buttons
+Object.keys(genderButtons).forEach(key => {
+    genderButtons[key].addEventListener('click', () => {
+        currentGenderFilter = key;  // Set current gender filter
+        applyFilters();  // Apply the filters
+    });
+});
+
+// Funktion, um die "active"-Klasse für die Buttons zu setzen
+function setActiveButton(buttonGroup, activeButton) {
+  // Entferne die "active"-Klasse von allen Buttons in der Gruppe
+  document.querySelectorAll(buttonGroup).forEach(button => button.classList.remove('active'));
+  // Setze die "active"-Klasse für den ausgewählten Button
+  activeButton.classList.add('active');
+}
+
+// Setze initial beide "All"-Buttons und den "On"-Button auf "active"
+window.onload = function() {
+  document.getElementById('fatalityAll').classList.add('active');
+  document.getElementById('genderAll').classList.add('active');
+  document.getElementById('infoBoxOn').classList.add('active');
+}
+
+// Event Listener für die Fatality-Buttons
+document.querySelectorAll('.fatality-button').forEach(button => {
+  button.addEventListener('click', function() {
+      setActiveButton('.fatality-button', this);
+  });
+});
+
+// Event Listener für die Gender-Buttons
+document.querySelectorAll('.gender-button').forEach(button => {
+  button.addEventListener('click', function() {
+      setActiveButton('.gender-button', this);
+  });
+});
+
+// Event Listener für die Infobox-Buttons
+document.querySelectorAll('#infoBoxOn, #infoBoxOff').forEach(button => {
+  button.addEventListener('click', function() {
+      setActiveButton('#infoBoxOn, #infoBoxOff', this);
+  });
+});
+
+
+
 
 // Load data from data.json
 fetch('./data/data.json')
@@ -118,30 +259,6 @@ fetch('./data/data.json')
   .then(data => {
     addDots(data); // Create and add dots from the dataset
   });
-
-// Filter dots based on the current slider value
-function filterDotsBySliderValue() {
-  const sliderValue = document.getElementById('dateSlider').value;
-  const year = Math.floor(sliderValue / 12) + 2014;
-  const month = months[sliderValue % 12];
-
-  // Update the displayed date
-  document.getElementById('dateDisplay').innerText = `${month} ${year}`;
-
-  // Remove current dots from the scene
-  currentDots.forEach(dot => scene.remove(dot.mesh));
-  currentDots = allDots.filter(dot => {
-    const dotYear = dot.incidentYear;
-    const dotMonth = dot.incidentMonth;
-    return dotYear < year || (dotYear === year && months.indexOf(dotMonth) <= months.indexOf(month));
-  });
-
-  // Add filtered dots to the scene
-  currentDots.forEach(dot => scene.add(dot.mesh));
-}
-
-// Slider event listener
-document.getElementById('dateSlider').addEventListener('input', filterDotsBySliderValue);
 
 // Animation loop
 function animate() {

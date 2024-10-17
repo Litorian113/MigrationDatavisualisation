@@ -18,6 +18,44 @@
 <body>
   <div id="container"></div>
 
+  <div id="leftPanel">
+    <h1>Global Missing Migrants</h1>
+    <div id="innerPanel">
+      <div class="control-section">
+        <h2>Infobox</h2>
+        <div class="buttonBox">
+        <button id="infoBoxOn" class="control-button">On</button>
+        <button id="infoBoxOff" class="control-button">Off</button>
+      </div>
+    </div>
+
+    <div class="control-section">
+      <h2>Fatality</h2>
+      <div class="buttonBox">
+      <button id="fatalityAll" class="control-button fatality-button active">All</button>
+      <button id="fatalityUnknown" class="control-button fatality-button">Unknown</button>
+      <button id="fatalityViolence" class="control-button fatality-button">Violence</button>
+      <button id="fatalityDrowning" class="control-button fatality-button">Drowning</button>
+      <button id="fatalityHarsh" class="control-button fatality-button">Harsh environment conditions</button>
+      <button id="fatalityAccident" class="control-button fatality-button">Accidental death</button>
+      <button id="fatalitySickness" class="control-button fatality-button">Sickness</button>
+      <button id="fatalityVehicle" class="control-button fatality-button">Vehicle accident</button>
+    </div>
+  </div>
+
+  <div class="control-section">
+    <h2>Gender</h2>
+    <div class="buttonBox">
+    <button id="genderAll" class="control-button gender-button active">All</button>
+    <button id="genderMen" class="control-button gender-button">Men</button>
+    <button id="genderWomen" class="control-button gender-button">Women</button>
+    <button id="genderChildren" class="control-button gender-button">Children</button>
+  </div>
+</div>
+  </div>
+</div>
+
+
   <!-- Slider for selecting year and month -->
   <div style="position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); width: 50%;">
     <input type="range" min="0" max="119" value="0" id="dateSlider" style="width: 100%;">
