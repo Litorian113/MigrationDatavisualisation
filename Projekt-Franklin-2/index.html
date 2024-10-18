@@ -9,11 +9,13 @@
   <!-- Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
+  <script src="https://unpkg.com/three@0.131.3/examples/js/renderers/CSS2DRenderer.js"></script>
+
+
   <!-- OrbitControls for mouse interaction -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-  <!-- Load dot.js and label.js before script.js -->
-  <script src="js/dotClass.js"></script> <!-- Include dot.js for the Dot functionality -->
+
 </head>
 <body>
   <div id="container"></div>
@@ -55,14 +57,54 @@
   </div>
 </div>
 
+<div id="legendPanel">
+  <h2>Groups of People</h2>
+  <div id="legendContent">
+      <!-- Linke Spalte mit den Kreisen -->
+      <div class="legend-circles">
+          <div class="circle" style="background-color: #8b0000;"></div> <!-- Dunkelstes Rot -->
+          <div class="circle" style="background-color: #ff4500;"></div> <!-- Mittleres Rot -->
+          <div class="circle" style="background-color: #ffa500;"></div> <!-- Helles Gelb-Orange -->
+      </div>
+      <!-- Rechte Spalte mit den Texten -->
+      <div class="legend-text">
+          <p>1-9</p>
+          <p>10-23</p>
+          <p>24-93</p>
+      </div>
+  </div>
+</div>
 
-  <!-- Slider for selecting year and month -->
-  <div style="position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); width: 50%;">
-    <input type="range" min="0" max="119" value="0" id="dateSlider" style="width: 100%;">
-    <span id="dateDisplay">January 2014</span>
+<div id="infoCard" class="infoCard">
+  <!-- Content for Pin 1 -->
+  <h2>Pin 1 Info</h2>
+  <p>This is the information for Pin 1.</p>
+</div>
+
+<div id="infoCard2" class="infoCard" style="display:none;">
+  <!-- Content for Pin 2 -->
+  <h2>Pin 2 Info</h2>
+  <p>This is the information for Pin 2.</p>
+</div>
+
+<div id="infoCard3" class="infoCard" style="display:none;">
+  <!-- Content for Pin 3 -->
+  <h2>Pin 3 Info</h2>
+  <p>This is the information for Pin 3.</p>
+</div>
+
+
+  <div id="sliderPanel">
+      <button id="playPauseButton">
+        <span id="playIcon">▶</span>
+        <span id="pauseIcon" style="display:none;">⏸</span>
+      </button>
+      <input type="range" min="0" max="119" value="0" id="dateSlider" style="width: 70%;">
+      <span id="dateDisplay">January 2014</span>
   </div>
 
   <!-- Script for the globe (script.js) -->
   <script src="js/script.js"></script>
+  <script src="js/pins.js"></script>
 </body>
 </html>

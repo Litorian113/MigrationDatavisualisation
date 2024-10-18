@@ -102,3 +102,120 @@ button:active {
   width: 300px;
 
 }
+
+#legendPanel {
+  position: absolute;
+  bottom: 50px;
+  right: 50px;
+  width: 180px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.37);
+  box-shadow: 0px 0px 20px 17px rgba(0,0,0,0.37);
+
+  color: white;
+  z-index: 1000; /* Sicherstellen, dass es über anderen Elementen liegt */
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Sometype Mono', monospace;
+}
+
+#legendPanel {
+  margin-right: 400px;
+  margin-bottom: 100px;
+}
+
+#legendPanel h2 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+#legendContent {
+  display: flex;
+  flex-direction: row; /* Zwei Spalten anordnen */
+}
+
+.legend-circles {
+  display: flex;
+  flex-direction: column; /* Kreise untereinander anordnen */
+  justify-content: space-around; /* Gleichmäßiger Abstand zwischen Kreisen */
+}
+
+.circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-bottom: 10px; /* Abstand zwischen den Kreisen */
+}
+
+.legend-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around; /* Text in Spalte gleichmäßig verteilen */
+  margin-left: 10px; /* Abstand zur linken Spalte */
+}
+
+.legend-text p {
+  margin: 0;
+  font-size: 1em;
+}
+
+
+#sliderPanel {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  border-radius: 10px;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+#dateSlider {
+  width: 400px;
+}
+
+#playPauseButton {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  color: white;
+}
+
+#dateDisplay {
+  color: white;
+  font-family: 'Sometype Mono', monospace;
+}
+
+
+#infoCard {
+  display: none;
+  position: absolute;
+  top: 15%;
+  right: 0;
+  width: 50%;
+  height: 70%;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid black;
+  padding: 20px;
+  overflow: auto;
+  z-index: 2000;
+}
+
+
+.pin-button {
+  border-radius: 10px; /* Rounded corners */
+  padding: 5px 10px; /* Adjust padding for rectangular shape */
+  background-color: white; /* Default background color */
+  cursor: pointer; /* Show pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.pin-button:hover {
+  background-color: grey; /* Change to grey on hover */
+}
