@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Text Scroll with Button Transition</title>
+  <title>3D Text Scroll with Silhouettes</title>
   <style>
     body, html {
       margin: 0;
       padding: 0;
-      overflow: hidden; /* No scrolling for the body */
+      overflow: hidden;
       font-family: 'Sometype Mono', monospace;
       background-color: black;
       color: white;
-      height: 100vh; /* Full view height */
+      height: 100vh;
     }
     canvas {
       display: block;
@@ -23,8 +23,8 @@
       text-align: center;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%) scale(0.1);  /* Start very small */
-      opacity: 0.4;  /* Start darker */
+      transform: translate(-50%, -50%) scale(0.1);
+      opacity: 0.4;
     }
     #button-container button {
       padding: 10px 20px;
@@ -44,19 +44,44 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script> <!-- Include GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
 
 <script>
   let scene, camera, renderer;
   let textMeshes = [];
+  let silhouetteMeshes = [];
   let font;
-  const distanceBetweenTexts = 30;  // Increased distance between each text along the Z-axis for more space
-  const extraDistanceAfterLastText = 25; // Move the button further behind the last text
+  let musicStarted = false;
+  let textPlayed = [false, false, false, false];
+  const distanceBetweenTexts = 30;
+  const extraDistanceAfterLastText = 25;
+  const totalSilhouettes = 60;  // The total number of silhouettes to spread out evenly
+  const zStart = -150;  // The starting point for the Z-axis distribution
+  const zEnd = 150;  // The end point for the Z-axis distribution
+
   const textData = [
     "Over 30,000 refugees drowned,\ntheir names unknown.",
     "From 2014 to 2023, millions fled war,\npoverty, and persecution, risking\ntheir lives for survival.",
     "Borders closed, compassion faded,\nand the world watched as lives were lost.\nRefugees don’t choose to flee –\nthey're forced to.",
     "In this Project we aimed to visualize this tragedy\nthrough data, hoping to raise awareness and show\nthe horror behind the numbers."
+  ];
+
+  // Load audio elements
+  const backgroundMusic = new Audio('../sound/Hintergrundmusik.mp3');
+  const textSounds = [
+    new Audio('../sound/Text1.MP3'),
+    new Audio('../sound/Text2.MP3'),
+    new Audio('../sound/Text3.MP3'),
+    new Audio('../sound/Text4.MP3')
+  ];
+
+  // Load textures for silhouettes
+  const silhouetteTextures = [
+    new THREE.TextureLoader().load('./assets/man.png'),
+    new THREE.TextureLoader().load('./assets/woman.png'),
+    new THREE.TextureLoader().load('./assets/womanchild.png'),
+    new THREE.TextureLoader().load('./assets/womanman.png'),
+    new THREE.TextureLoader().load('./assets/family.png')
   ];
 
   const loader = new THREE.FontLoader();
@@ -66,70 +91,108 @@
   });
 
   function init() {
-    // Create the scene
     scene = new THREE.Scene();
-
-    // Set up the camera further back so the first text is in frame
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 40;  // Start further back to make sure the first text is fully visible
+    camera.position.z = 40;
 
-    // Set up the renderer
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // Create text materials and meshes
+    // Create text meshes
     textData.forEach((text, index) => {
       const geometry = new THREE.TextGeometry(text, {
         font: font,
-        size: 1.2,  // Text size slightly increased
+        size: 1.2,
         height: 0.1,
         curveSegments: 12
       });
 
-      // Set the text color to white
       const material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
       const textMesh = new THREE.Mesh(geometry, material);
-
-      textMesh.geometry.center();  // Center the text horizontally and vertically
-      textMesh.position.set(0, 0, -index * distanceBetweenTexts);  // Place texts along the Z axis
+      textMesh.geometry.center();
+      textMesh.position.set(0, 0, -index * distanceBetweenTexts);
       textMeshes.push(textMesh);
       scene.add(textMesh);
     });
 
-    // Add the button's position behind the last text
-    const buttonZPosition = -(textData.length * distanceBetweenTexts + extraDistanceAfterLastText);
+    // Spread silhouettes evenly along the Z axis between zStart and zEnd
+    const zSpacing = (zEnd - zStart) / totalSilhouettes;  // Calculate spacing between each silhouette
+    for (let i = 0; i < totalSilhouettes; i++) {
+      const textureIndex = i % silhouetteTextures.length;  // Repeat silhouettes
+      const material = new THREE.MeshBasicMaterial({
+        map: silhouetteTextures[textureIndex],
+        transparent: true,
+        opacity: 1  // Start fully visible
+      });
 
-    // Add an event listener to simulate scrolling without body scrolling
+      const geometry = new THREE.PlaneGeometry(10, 15);  // Adjust size of the planes
+      const silhouetteMesh = new THREE.Mesh(geometry, material);
+
+      // Spread them widely along the X axis and evenly along the Z axis
+      const xPosition = (Math.random() > 0.5 ? -1 : 1) * (20 + Math.random() * 15);  // Spread more widely along X
+      const zPosition = zStart + i * zSpacing;  // Evenly spaced along the Z axis
+      silhouetteMesh.position.set(xPosition, -5, zPosition);
+
+      silhouetteMeshes.push(silhouetteMesh);
+      scene.add(silhouetteMesh);
+    }
+
     window.addEventListener('wheel', onScroll, false);
     animate();
   }
 
   function onScroll(event) {
-    const scrollAmount = event.deltaY * 0.03;  // Reduce scroll speed further for slower camera movement
+    const scrollAmount = event.deltaY * 0.03;
+    camera.position.z += scrollAmount;
 
-    // Reverse the scroll direction: Scroll DOWN moves the camera backward, Scroll UP moves it forward
-    camera.position.z += scrollAmount;  // Camera moves backward when scrolling down
+    // Start background music on first scroll
+    if (!musicStarted) {
+      backgroundMusic.loop = true;
+      backgroundMusic.play();
+      musicStarted = true;
+    }
 
     updateTextVisibility();
+    updateSilhouettes();
     updateButtonVisibility();
   }
 
   function updateTextVisibility() {
     textMeshes.forEach((mesh, index) => {
       let distance = Math.abs(camera.position.z - mesh.position.z);
-
-      // Animate the text appearance and size based on distance to the camera
-      if (distance < 25) {  // Highlight the text earlier by checking further distance
-        // Animate to bright and fully opaque
+      if (distance < 25) {
         gsap.to(mesh.material, { opacity: 1, duration: 0.5 });
         gsap.to(mesh.scale, { x: 1 + (1 - distance / 25), y: 1 + (1 - distance / 25), z: 1, duration: 0.5 });
+        playSoundForText(index);
       } else {
-        // Animate to transparent and default scale
         gsap.to(mesh.material, { opacity: 0.4, duration: 0.5 });
         gsap.to(mesh.scale, { x: 1, y: 1, z: 1, duration: 0.5 });
       }
     });
+  }
+
+  function updateSilhouettes() {
+    silhouetteMeshes.forEach((mesh) => {
+      let distance = Math.abs(camera.position.z - mesh.position.z);
+
+      // Reduce opacity as the camera gets closer to the silhouette (dissolving effect)
+      if (distance < 50) {
+        gsap.to(mesh.material, { opacity: 1 - (1 - distance / 50), duration: 0.5 });
+      }
+
+      // Make the silhouette completely disappear when too close
+      if (distance < 10) {
+        gsap.to(mesh.material, { opacity: 0, duration: 0.5 });
+      }
+    });
+  }
+
+  function playSoundForText(index) {
+    if (!textPlayed[index]) {
+      textSounds[index].play();
+      textPlayed[index] = true;
+    }
   }
 
   function updateButtonVisibility() {
@@ -138,8 +201,6 @@
     const buttonZPosition = lastTextPositionZ - extraDistanceAfterLastText;
 
     let distance = Math.abs(camera.position.z - buttonZPosition);
-
-    // Animate button like the text: darker and smaller when out of frame, fully visible and scaled up when in frame
     if (distance < 25) {
       gsap.to(button, { opacity: 1, scale: 1, duration: 0.5 });
     } else {
