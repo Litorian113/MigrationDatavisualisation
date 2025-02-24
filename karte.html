@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styleKarte.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="infoCard" class="infoCard">
+        <div>
+            <div class="headline">
+                <h2 class="heading">Darién-Gap (Kolumbien/Panama)</h2>
+            </div>
+            <div>
+                <span id="closeBtn" class="closeBtn">
+                    <img src="close2.png" alt="Close" class="icon">
+                </span>
+                <span id="audioBtn" class="audioBtn">
+                    <img src="soundOn.png" alt="Audio" class="icon">
+                </span> <!-- Lautsprecher-Icon -->
+            </div>
+            <audio id="audioPlayer" src="Darian.mp3"></audio> <!-- Dein MP3-Pfad -->
+        </div>
+        <div>
+            <hr>
+        </div>
+        <div id="mainContent">
+            <div class="bildContainer">
+
+                <img src="wald.svg" class="bild">
+            </div>
+
+            <div class="content">
+                <p>The Darién Gap, a densely forested and nearly impassable region between Panama and Colombia, is a
+                    perilous crossing attempted by many migrants fleeing various Latin American countries in hopes of
+                    reaching the United States. The extreme weather conditions, thick vegetation, steep hills, dangerous
+                    animals, the risk of disease, and the threat posed by criminal groups result in many migrants dying
+                    or
+                    suffering serious injuries during the journey.</p>
+            </div>
+            <div id="box">
+                <div class="additional-info">
+                    <div>
+                        <ul>
+                            <li>
+                                <h3 class="headingH3"> About 520,000 migrants </h3>
+                                <p class="subText">crossed the Darién Gap between Colombia and Panama</p>
+                            </li>
+                            <li>
+                                <h3 class="headingH3">
+                                    One in five
+                                </h3>
+                                <p class="subText">
+                                    migrants crossing is a child, under five years old​
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <ul>
+                            <li>
+                                <h3 class="headingH3">The Darién Gap</h3>
+                                <p class="subText">is one of the most dangerous migration routes </p>
+                            </li>
+                            <li>
+                                <h3 class="headingH3">Many migrants</h3>
+                                <p class="subText">face violence, including robberies and sexual assaults​</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <script>
+// Event listener to close the popup and stop the audio
+document.getElementById('closeBtn').addEventListener('click', function () {
+    document.getElementById('infoCard').style.display = 'none';
+    
+    // Stop the audio if it is playing
+    if (!audioPlayer.paused) {
+        audioPlayer.pause();
+        isPlaying = false; // Reset the state
+    }
+});
+
+const audioBtn = document.getElementById('audioBtn');
+const audioPlayer = document.getElementById('audioPlayer');
+let isPlaying = false;
+
+// Event listener to play/pause the audio
+audioBtn.addEventListener('click', function () {
+    if (!isPlaying) {
+        audioPlayer.play();
+        isPlaying = true;
+    } else {
+        audioPlayer.pause();
+        isPlaying = false;
+    }
+});
+
+        </script>
+</body>
+
+</html>
