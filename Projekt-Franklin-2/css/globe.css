@@ -1,0 +1,11 @@
+.close-button {
+    position: absolute;
+    top: 100px;
+    right: 370px;
+    z-index: 10000;
+}
+
+.close-button img {
+    width: 50px; /* Größe des Icons */
+    cursor: pointer;
+}

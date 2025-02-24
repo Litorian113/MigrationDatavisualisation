@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap'); /* Include the Sometype Mono font */
+
+body {
+    font-family: 'Sometype Mono', monospace;
+    background-image: url('/Projekt-Franklin-2/assets/imageBack.png');
+    background-size: 101%;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    width: 80%;
+    background: rgba(198, 198, 198, 0.07); /* halbtransparentes Weiß */
+    border: 4px solid rgba(255, 255, 255, 0.035); /* leichter Rand */
+    border-radius: 40px;
+    backdrop-filter: blur(10px); /* Weichzeichner-Effekt */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: left;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.text-section {
+    margin: 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+#contentBox {
+    display: flex;
+    flex-direction: row;
+    /* width: 600px; */
+    width: 750px;
+
+
+}
+
+.teamBild {
+    position: relative;
+    right: -380px;
+    top: -550px;
+    width: 100%;
+    scale: 30%;
+
+}
+
+#spalte1 {
+    flex-direction: column;
+    text-align: right;
+    width: 200px;
+    height: 200px;
+
+}
+
+#spalte2 {
+    flex-direction: column;
+
+    width: 50px;
+    height: 200px;
+
+}
+
+#spalte3 {
+    flex-direction: column;
+
+    width: 500px;
+    height: 200px;
+}
+
+h1 {
+    color: #e01b1b;
+    font-size: 100px;
+    margin: 0;
+}
+
+h2 {
+    color: #e01b1b;
+    font-size: 24px;
+    margin: 10px 0;
+}
+
+.donate-section img {
+    max-width: 100px;
+    margin-right: 10px;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.image-section img {
+    position: relative;
+    top: -850px;
+    left: 550px;
+    scale: 130%;
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+
+.footer {
+    position: relative;
+    top: -800px;
+    left: 302px
+    
+}
+.text {
+    line-height: 0.5;
+    font-size: 10px;
+}
+
+.close-button {
+    position: absolute;
+    top: 100px;
+    right: 90px;
+}
+
+.close-button img {
+    width: 50px; /* Größe des Icons */
+    cursor: pointer;
+}
+
+.dataset-button {
+    position: absolute;
+    top: 820px;  /* Hier kannst du den Button positionieren */
+    right: 90px; /* Hier kannst du den Button positionieren */
+    text-align: center; /* Zentriert den Text unter dem Icon */
+    z-index: 10;
+}
+
+.dataset-button img {
+    width: 30px; /* Größe des Icons */
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+}
+
+.dataset-button label {
+    font-size: 12px; /* Kleinere Schriftgröße */
+    color: rgb(255, 255, 255);
+    margin-top: 5px; /* Abstand zwischen Icon und Text */
+    display: block;
+    text-align: center; /* Zentriert den Text */
+}
+.dataset-button a {
+
+    color: inherit; /* Erbt die Textfarbe vom Eltern-Element */
+}

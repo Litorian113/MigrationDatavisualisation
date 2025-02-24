@@ -1,0 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=Sometype+Mono&display=swap'); /* Include the Sometype Mono font */
+
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%); /* Startposition: rechts außerhalb des Bildschirms */
+        opacity: 0; /* Startet unsichtbar */
+    }
+    to {
+        transform: translateX(0); /* Endposition: sichtbar auf dem Bildschirm */
+        opacity: 1; /* Voll sichtbar */
+    }
+}
+
+#infoCard {
+    overflow: hidden; /* Verhindert, dass Inhalt die Rundungen verdeckt */
+    transform: translateX(100%); /* Infokarte startet außerhalb des Bildschirms */
+    display: block;
+    position: absolute;
+    top: 14%;
+    right: 5%;
+    width: 650px;
+    height: 800px;
+    z-index: 9999; /* Setzt z-index auf einen hohen Wert */
+    background: rgba(198, 198, 198, 0.07); /* halbtransparentes Weiß */
+    border: 4px solid rgba(255, 255, 255, 0.035); /* leichter Rand */
+    border-radius: 40px;
+    backdrop-filter: blur(10px); /* Weichzeichner-Effekt */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    text-align: center;
+    animation: slideIn 0.5s ease-out forwards; /* Animation für das Einfahren */
+
+}
+
+#infoCard2 {
+    overflow: hidden; /* Verhindert, dass Inhalt die Rundungen verdeckt */
+    transform: translateX(100%); /* Infokarte startet außerhalb des Bildschirms */
+    display: block;
+    position: absolute;
+    top: 14%;
+    right: 5%;
+    width: 650px;
+    height: 800px;
+    z-index: 9999; /* Setzt z-index auf einen hohen Wert */
+    background: rgba(198, 198, 198, 0.07); /* halbtransparentes Weiß */
+    border: 4px solid rgba(255, 255, 255, 0.035); /* leichter Rand */
+    border-radius: 40px;
+    backdrop-filter: blur(10px); /* Weichzeichner-Effekt */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    text-align: center;
+    animation: slideIn 0.5s ease-out forwards; /* Animation für das Einfahren */
+
+}
+
+.closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    font-size: 45px;
+    cursor: pointer;
+}
+
+.audioBtn {
+    position: absolute;
+    top: 10px;
+    right: 80px; /* Abstand zum x-Button */
+    font-size: 45px;
+    cursor: pointer;
+}
+
+.icon {
+    width: 45px; /* Größe des Icons */
+    height: 45px; /* Größe des Icons */
+
+}
+
+.icon:hover {
+    filter: brightness(0.8); /* Optional: Farbänderung beim Hover */
+}
+
+.audioBtn:hover {
+    color: red; /* Optional: Farbänderung beim Hover */
+}
+
+.closeBtn:hover {
+    color: red; /* Optional: Farbänderung beim Hover */
+}
+
+
+.additional-info {
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+}
+
+h3 {
+    color: #CE1010;
+    font-weight: 200;
+    
+}
+
+.content {
+    margin-top: 40px;
+    text-align: left;
+    /* margin-left: 120px;
+    margin-right: 120px; */
+    font-size: 0.8em;
+    line-height: 1.3;
+}
+
+
+hr {
+    width: 90%;
+}
+
+.heading {
+    text-align: left;
+    margin-left: 40px;
+    margin-top: 60px;
+    line-height: 1;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.bildContainer {
+    display: flex;
+    flex-direction: column; /* Stapelt Bild und Text übereinander */
+    align-items: center;
+}
+.bild {
+    width: 420px;
+    height: auto; /* Höhe passt sich proportional an */
+    display: block;
+    margin: 0 auto;
+}
+
+.mainContent {
+    margin-left: 120px;
+    margin-right: 120px;
+
+}
+.mainContentNeu {
+    margin-left: 80px;
+    margin-right: 80px;
+
+}
+
+.headingH3 {
+    font-size: 14px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    font-weight:900;
+
+}
+
+.subText {
+    font-size: 11px;
+    margin-top: -10px;
+}
+
+#box {
+    margin-left: -20px;
+}
+
+.contentBox {
+    display: flex;
+    flex-direction: row;
+    margin-top: 30px;
+}
+
+#linkeSpalte {
+    flex: 1;
+    margin-right: 15px;
+    text-align: left;
+}
+#rechteSpalte {
+    flex: 3;
+}
+
+.contentNeu {
+    text-align: left;
+    /* margin-left: 120px;
+    margin-right: 120px; */
+    font-size: 0.8em;
+    line-height: 1.3;
+}
+.bildContainerUnten {
+    display: flex;
+    flex-direction: column; /* Stapelt Bild und Text übereinander */
+    align-items: center;
+    margin-top: 30px;
+}
+.bildUnten {
+    width: 420px;
+    height: auto; /* Höhe passt sich proportional an */
+    display: block;
+    margin: 0 auto;
+}
+
+.h2head {
+    font-size: 50px;
+    color: #CE1010;
+    text-align: left;
+    line-height: 0.5;
+    margin-top: 70px;
+}

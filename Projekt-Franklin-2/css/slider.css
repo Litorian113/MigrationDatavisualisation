@@ -1,0 +1,76 @@
+#container1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#sliderContainer {
+    position: absolute;
+    bottom: 50px;
+    left: 400px;
+    width: 60%;
+    /* Set the width to 80% of the screen */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+#timeSlider {
+    width: 85%;
+    /* Slider takes up 85% of the container width */
+    height: 5px;
+    /* You can adjust the height of the slider if needed */
+    margin-left: 20px;
+    -webkit-appearance: none;
+    /* Override default CSS styles */
+    appearance: none;
+    background: #ffffff;
+    /* Grey background */
+    outline: none;
+    /* Remove outline */
+    opacity: 1;
+    /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s;
+    /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+    border-radius: 20px;
+}
+
+#dateDisplay {
+    position: absolute;
+    bottom: 30px;
+    text-align: center;
+    left: 480px;
+    font-size: 16px;
+    color: #ffffff;
+    font-family: 'Sometype Mono', monospace;
+}
+
+#timeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #CE1010;
+    cursor: pointer;
+}
+
+#playPauseButton {
+    width: 50px;
+    height: 50px;
+
+    margin-top: -8px;
+    border-radius: 50%;
+    font-size: 42px;
+    cursor: pointer;
+    color: #CE1010;
+    margin-right: 10px;
+    border: none;
+    background-color: rgb(0, 0, 0);
+}

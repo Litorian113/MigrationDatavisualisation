@@ -1,0 +1,165 @@
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Vollständig schwarzer Overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1000;
+    /* Über allem */
+    transition: opacity 1s ease;
+    /* Weicher Übergang */
+
+
+}
+
+#introText {
+    color: white;
+    text-align: left;
+    z-index: 1;
+    margin-top: 350px;
+    font-size: 28px;
+    line-height: 0.3;
+}
+
+#overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+    /* Klicks deaktivieren, wenn der Overlay unsichtbar ist */
+}
+
+
+#svgContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -40px;
+    /* Abstand zum Text */
+}
+
+#refugeeSVG {
+    width: 100%;
+    /* Standardmäßig auf die volle Breite skalieren */
+    height: auto;
+    /* Proportionale Höhe */
+    /* Maximale Breite, um das Bild nicht zu groß werden zu lassen */
+}
+
+#tag {
+    margin-top: 100px;
+    font-size: 20px;
+}
+
+#tag2 {
+    width: 30px;
+    position: relative;
+    opacity: 0.4;
+    top: 750px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    left: -3px;
+    font-size: 12px;
+}
+
+
+
+.scroll-indicator {
+    width: 12px;
+    margin: 0 auto;
+    position: relative;
+    opacity: .5;
+    top: 750px;
+
+    &::before,
+    &::after {
+        content: '';
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    &::before {
+        width: 12px;
+        height: 12px;
+        border-radius: 10px;
+        border: 1px solid #fff;
+        animation: dot 3s infinite ease-in-out;
+    }
+
+    &::after {
+        width: 7px;
+        height: 7px;
+        border-right: 1px solid #fff;
+        border-bottom: 1px solid #fff;
+        transform: rotate(45deg);
+        animation: arrow 3s infinite ease-in-out;
+        animation-delay: .75s;
+        opacity: .25;
+    }
+
+    &>div {
+        display: block;
+
+        &::before,
+        &::after {
+            content: '';
+            display: block;
+            margin: 5px auto;
+            border-radius: 10px;
+            border: 1px solid #fff;
+            animation: dot 3s infinite ease-in-out;
+        }
+
+        &::before {
+            width: 8px;
+            height: 8px;
+            animation-delay: .25s;
+        }
+
+        &::after {
+            width: 6px;
+            height: 6px;
+            animation-delay: .5s;
+        }
+    }
+}
+
+@keyframes dot {
+    0% {
+        transform: scale(.75);
+        opacity: .25;
+    }
+
+    25% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(.75);
+        opacity: .25;
+    }
+}
+
+@keyframes arrow {
+    0% {
+        transform: scale(.75) rotate(45deg);
+        opacity: .25;
+    }
+
+    25% {
+        transform: scale(1) rotate(45deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(.75) rotate(45deg);
+        opacity: .25;
+    }
+}
