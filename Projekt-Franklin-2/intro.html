@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>3D Text Scroll with Silhouettes</title>
+
+  <link rel="stylesheet" href="css/intro.css" />
   <style>
-    body, html {
+    body,
+    html {
       margin: 0;
       padding: 0;
       overflow: hidden;
@@ -14,9 +18,11 @@
       color: white;
       height: 100vh;
     }
+
     canvas {
       display: block;
     }
+
     #button-container {
       position: absolute;
       width: 100%;
@@ -26,6 +32,7 @@
       transform: translate(-50%, -50%) scale(0.1);
       opacity: 0.4;
     }
+
     #button-container button {
       padding: 10px 20px;
       font-size: 18px;
@@ -37,189 +44,256 @@
     }
   </style>
 </head>
+
 <body>
+  <div id="overlay">
+    <div id="introText">
+      <h1>Global Missing Migrants</h1>
+      <p>2014-2023</p>
+    </div>
+    <div id="tag">
+      <p>
+        < click to start>
+      </p>
+    </div>
+    <div id="svgContainer">
+      <!-- SVG hier verlinkt -->
+      <img src="/Projekt-Franklin-2/assets/refugee.svg" id="refugeeSVG" alt="Refugee Silhouette">
+    </div>
+  </div>
+  <!-- <div class="scroll-indicator">
+    <div class="dots"></div>
+  </div>
+<div id="tag2">
+  <p>
+    scroll
+  </p>
+</div> -->
+  <div id="button-container">
+    <button onclick="window.location.href='index.html'">Enter Datavisualisation</button>
+  </div>
 
-<div id="button-container">
-  <button onclick="window.location.href='index.html'">Enter Datavisualisation</button>
-</div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <script>
+    const overlay = document.getElementById('overlay');
 
-<script>
-  let scene, camera, renderer;
-  let textMeshes = [];
-  let silhouetteMeshes = [];
-  let font;
-  let musicStarted = false;
-  let textPlayed = [false, false, false, false];
-  const distanceBetweenTexts = 30;
-  const extraDistanceAfterLastText = 25;
-  const totalSilhouettes = 60;  // The total number of silhouettes to spread out evenly
-  const zStart = -150;  // The starting point for the Z-axis distribution
-  const zEnd = 150;  // The end point for the Z-axis distribution
-
-  const textData = [
-    "Over 30,000 refugees drowned,\ntheir names unknown.",
-    "From 2014 to 2023, millions fled war,\npoverty, and persecution, risking\ntheir lives for survival.",
-    "Borders closed, compassion faded,\nand the world watched as lives were lost.\nRefugees don’t choose to flee –\nthey're forced to.",
-    "In this Project we aimed to visualize this tragedy\nthrough data, hoping to raise awareness and show\nthe horror behind the numbers."
-  ];
-
-  // Load audio elements
-  const backgroundMusic = new Audio('../sound/Hintergrundmusik.mp3');
-  const textSounds = [
-    new Audio('../sound/Text1.MP3'),
-    new Audio('../sound/Text2.MP3'),
-    new Audio('../sound/Text3.MP3'),
-    new Audio('../sound/Text4.MP3')
-  ];
-
-  // Load textures for silhouettes
-  const silhouetteTextures = [
-    new THREE.TextureLoader().load('./assets/man.png'),
-    new THREE.TextureLoader().load('./assets/woman.png'),
-    new THREE.TextureLoader().load('./assets/womanchild.png'),
-    new THREE.TextureLoader().load('./assets/womanman.png'),
-    new THREE.TextureLoader().load('./assets/family.png')
-  ];
-
-  const loader = new THREE.FontLoader();
-  loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(loadedFont) {
-    font = loadedFont;
-    init();
-  });
-
-  function init() {
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 40;
-
-    renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
-    // Create text meshes
-    textData.forEach((text, index) => {
-      const geometry = new THREE.TextGeometry(text, {
-        font: font,
-        size: 1.2,
-        height: 0.1,
-        curveSegments: 12
-      });
-
-      const material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
-      const textMesh = new THREE.Mesh(geometry, material);
-      textMesh.geometry.center();
-      textMesh.position.set(0, 0, -index * distanceBetweenTexts);
-      textMeshes.push(textMesh);
-      scene.add(textMesh);
+    // Wenn der Benutzer klickt, fade das Overlay aus und starte die Musik
+    overlay.addEventListener('click', function () {
+      backgroundMusic.play(); // Musik starten
+      overlay.classList.add('hidden'); // Overlay ausfaden
     });
 
-    // Spread silhouettes evenly along the Z axis between zStart and zEnd
-    const zSpacing = (zEnd - zStart) / totalSilhouettes;  // Calculate spacing between each silhouette
-    for (let i = 0; i < totalSilhouettes; i++) {
-      const textureIndex = i % silhouetteTextures.length;  // Repeat silhouettes
-      const material = new THREE.MeshBasicMaterial({
-        map: silhouetteTextures[textureIndex],
-        transparent: true,
-        opacity: 1  // Start fully visible
+
+
+    let scene, camera, renderer;
+    let textMeshes = [];
+    let silhouetteMeshes = [];
+    let font;
+    let musicStarted = false;
+    let textPlayed = [false, false, false, false];
+    const distanceBetweenTexts = 30;
+    const extraDistanceAfterLastText = 25;
+    const totalSilhouettes = 60; // The total number of silhouettes to spread out evenly
+    const zStart = -150; // The starting point for the Z-axis distribution
+    const zEnd = 150; // The end point for the Z-axis distribution
+
+    const textData = [
+      "Over 30,000 refugees drowned,\ntheir names unknown.",
+      "From 2014 to 2023, millions fled war,\npoverty, and persecution, risking\ntheir lives for survival.",
+      "Borders closed, compassion faded,\nand the world watched as lives were lost.\nRefugees don’t choose to flee –\nthey're forced to.",
+      "If we want to prevent more \nlives from being lost, we must \ncome together as humanity and \nstop turning a blind eye."
+    ];
+
+    // Load audio elements
+    const backgroundMusic = new Audio('./sound/Hintergrundmusik.mp3');
+    const textSounds = [
+      new Audio('./sound/Text1.MP3'),
+      new Audio('./sound/Text2.MP3'),
+      new Audio('./sound/Text3.MP3'),
+      new Audio('./sound/Text4.MP3')
+    ];
+
+    // Load textures for silhouettes
+    const silhouetteTextures = [
+      new THREE.TextureLoader().load('./assets/man.png'),
+      new THREE.TextureLoader().load('./assets/woman.png'),
+      new THREE.TextureLoader().load('./assets/womanchild.png'),
+      new THREE.TextureLoader().load('./assets/womanman.png'),
+      new THREE.TextureLoader().load('./assets/family.png')
+    ];
+
+    const loader = new THREE.FontLoader();
+    loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (loadedFont) {
+      font = loadedFont;
+      init();
+    });
+
+    function init() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 40;
+
+      renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // Create text meshes
+      textData.forEach((text, index) => {
+        const geometry = new THREE.TextGeometry(text, {
+          font: font,
+          size: 1.2,
+          height: 0.1,
+          curveSegments: 12
+        });
+
+        const material = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.4
+        });
+        const textMesh = new THREE.Mesh(geometry, material);
+        textMesh.geometry.center();
+        textMesh.position.set(0, 0, -index * distanceBetweenTexts);
+        textMeshes.push(textMesh);
+        scene.add(textMesh);
       });
 
-      const geometry = new THREE.PlaneGeometry(10, 15);  // Adjust size of the planes
-      const silhouetteMesh = new THREE.Mesh(geometry, material);
+      // Spread silhouettes evenly along the Z axis between zStart and zEnd
+      const zSpacing = (zEnd - zStart) / totalSilhouettes; // Calculate spacing between each silhouette
+      for (let i = 0; i < totalSilhouettes; i++) {
+        const textureIndex = i % silhouetteTextures.length; // Repeat silhouettes
+        const material = new THREE.MeshBasicMaterial({
+          map: silhouetteTextures[textureIndex],
+          transparent: true,
+          opacity: 1 // Start fully visible
+        });
 
-      // Spread them widely along the X axis and evenly along the Z axis
-      const xPosition = (Math.random() > 0.5 ? -1 : 1) * (20 + Math.random() * 15);  // Spread more widely along X
-      const zPosition = zStart + i * zSpacing;  // Evenly spaced along the Z axis
-      silhouetteMesh.position.set(xPosition, -5, zPosition);
+        const geometry = new THREE.PlaneGeometry(10, 15); // Adjust size of the planes
+        const silhouetteMesh = new THREE.Mesh(geometry, material);
 
-      silhouetteMeshes.push(silhouetteMesh);
-      scene.add(silhouetteMesh);
+        // Spread them widely along the X axis and evenly along the Z axis
+        const xPosition = (Math.random() > 0.5 ? -1 : 1) * (20 + Math.random() * 15); // Spread more widely along X
+        const zPosition = zStart + i * zSpacing; // Evenly spaced along the Z axis
+        silhouetteMesh.position.set(xPosition, -5, zPosition);
+
+        silhouetteMeshes.push(silhouetteMesh);
+        scene.add(silhouetteMesh);
+      }
+
+      window.addEventListener('wheel', onScroll, false);
+      animate();
     }
 
-    window.addEventListener('wheel', onScroll, false);
-    animate();
-  }
+    function onScroll(event) {
+      const scrollAmount = event.deltaY * 0.03;
+      camera.position.z += scrollAmount;
 
-  function onScroll(event) {
-    const scrollAmount = event.deltaY * 0.03;
-    camera.position.z += scrollAmount;
+      // Start background music on first scroll
+      if (!musicStarted) {
+        backgroundMusic.loop = true;
+        backgroundMusic.play();
+        musicStarted = true;
+      }
 
-    // Start background music on first scroll
-    if (!musicStarted) {
-      backgroundMusic.loop = true;
-      backgroundMusic.play();
-      musicStarted = true;
+      updateTextVisibility();
+      updateSilhouettes();
+      updateButtonVisibility();
     }
 
-    updateTextVisibility();
-    updateSilhouettes();
-    updateButtonVisibility();
-  }
+    function updateTextVisibility() {
+      textMeshes.forEach((mesh, index) => {
+        let distance = Math.abs(camera.position.z - mesh.position.z);
+        if (distance < 25) {
+          gsap.to(mesh.material, {
+            opacity: 1,
+            duration: 0.5
+          });
+          gsap.to(mesh.scale, {
+            x: 1 + (1 - distance / 25),
+            y: 1 + (1 - distance / 25),
+            z: 1,
+            duration: 0.5
+          });
+          playSoundForText(index);
+        } else {
+          gsap.to(mesh.material, {
+            opacity: 0.4,
+            duration: 0.5
+          });
+          gsap.to(mesh.scale, {
+            x: 1,
+            y: 1,
+            z: 1,
+            duration: 0.5
+          });
+        }
+      });
+    }
 
-  function updateTextVisibility() {
-    textMeshes.forEach((mesh, index) => {
-      let distance = Math.abs(camera.position.z - mesh.position.z);
+    function updateSilhouettes() {
+      silhouetteMeshes.forEach((mesh) => {
+        let distance = Math.abs(camera.position.z - mesh.position.z);
+
+        // Reduce opacity as the camera gets closer to the silhouette (dissolving effect)
+        if (distance < 50) {
+          gsap.to(mesh.material, {
+            opacity: 1 - (1 - distance / 50),
+            duration: 0.5
+          });
+        }
+
+        // Make the silhouette completely disappear when too close
+        if (distance < 10) {
+          gsap.to(mesh.material, {
+            opacity: 0,
+            duration: 0.5
+          });
+        }
+      });
+    }
+
+    function playSoundForText(index) {
+      if (!textPlayed[index]) {
+        textSounds[index].play();
+        textPlayed[index] = true;
+      }
+    }
+
+    function updateButtonVisibility() {
+      const button = document.getElementById('button-container');
+      const lastTextPositionZ = -(textMeshes.length - 1) * distanceBetweenTexts;
+      const buttonZPosition = lastTextPositionZ - extraDistanceAfterLastText;
+
+      let distance = Math.abs(camera.position.z - buttonZPosition);
       if (distance < 25) {
-        gsap.to(mesh.material, { opacity: 1, duration: 0.5 });
-        gsap.to(mesh.scale, { x: 1 + (1 - distance / 25), y: 1 + (1 - distance / 25), z: 1, duration: 0.5 });
-        playSoundForText(index);
+        gsap.to(button, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.5
+        });
       } else {
-        gsap.to(mesh.material, { opacity: 0.4, duration: 0.5 });
-        gsap.to(mesh.scale, { x: 1, y: 1, z: 1, duration: 0.5 });
+        gsap.to(button, {
+          opacity: 0.4,
+          scale: 0.1,
+          duration: 0.5
+        });
       }
-    });
-  }
-
-  function updateSilhouettes() {
-    silhouetteMeshes.forEach((mesh) => {
-      let distance = Math.abs(camera.position.z - mesh.position.z);
-
-      // Reduce opacity as the camera gets closer to the silhouette (dissolving effect)
-      if (distance < 50) {
-        gsap.to(mesh.material, { opacity: 1 - (1 - distance / 50), duration: 0.5 });
-      }
-
-      // Make the silhouette completely disappear when too close
-      if (distance < 10) {
-        gsap.to(mesh.material, { opacity: 0, duration: 0.5 });
-      }
-    });
-  }
-
-  function playSoundForText(index) {
-    if (!textPlayed[index]) {
-      textSounds[index].play();
-      textPlayed[index] = true;
     }
-  }
 
-  function updateButtonVisibility() {
-    const button = document.getElementById('button-container');
-    const lastTextPositionZ = -(textMeshes.length - 1) * distanceBetweenTexts;
-    const buttonZPosition = lastTextPositionZ - extraDistanceAfterLastText;
-
-    let distance = Math.abs(camera.position.z - buttonZPosition);
-    if (distance < 25) {
-      gsap.to(button, { opacity: 1, scale: 1, duration: 0.5 });
-    } else {
-      gsap.to(button, { opacity: 0.4, scale: 0.1, duration: 0.5 });
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
     }
-  }
 
-  function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-  }
-
-  window.addEventListener('resize', () => {
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-  });
-
-</script>
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+  </script>
 
 </body>
+
 </html>

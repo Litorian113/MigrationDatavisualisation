@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Globe with Country Borders and Time Slider</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/styleKarte.css" />
+  <link rel="stylesheet" href="css/slider.css" />
 
   <!-- Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -17,94 +20,213 @@
 
 
 </head>
+
 <body>
   <div id="container"></div>
+
+  <a href="endcard.html" class="info-button">
+    <img src="/Projekt-Franklin-2/assets/info2.svg" alt="Info Button">
+</a>
 
   <div id="leftPanel">
     <h1>Global Missing Migrants</h1>
     <div id="innerPanel">
       <div class="control-section">
-        <h2>Infobox</h2>
+        <h2>Info-Pins</h2>
         <div class="buttonBox">
-        <button id="infoBoxOn" class="control-button">On</button>
-        <button id="infoBoxOff" class="control-button">Off</button>
+          <button id="infoBoxOn" class="control-button">On</button>
+          <button id="infoBoxOff" class="control-button">Off</button>
+        </div>
+      </div>
+
+      <div class="control-section">
+        <h2>Fatality</h2>
+        <div class="buttonBox">
+          <button id="fatalityAll" class="control-button fatality-button active">All</button>
+          <button id="fatalityUnknown" class="control-button fatality-button">Unknown</button>
+          <button id="fatalityViolence" class="control-button fatality-button">Violence</button>
+          <button id="fatalityDrowning" class="control-button fatality-button">Drowning</button>
+          <button id="fatalityHarsh" class="control-button fatality-button">Harsh environment conditions</button>
+          <button id="fatalityAccident" class="control-button fatality-button">Accidental death</button>
+          <button id="fatalitySickness" class="control-button fatality-button">Sickness</button>
+          <button id="fatalityVehicle" class="control-button fatality-button">Vehicle accident</button>
+        </div>
+      </div>
+
+      <div class="control-section">
+        <h2>Gender</h2>
+        <div class="buttonBox">
+          <button id="genderAll" class="control-button gender-button active">All</button>
+          <button id="genderMen" class="control-button gender-button">Men</button>
+          <button id="genderWomen" class="control-button gender-button">Women</button>
+          <button id="genderChildren" class="control-button gender-button">Children</button>
+        </div>
       </div>
     </div>
-
-    <div class="control-section">
-      <h2>Fatality</h2>
-      <div class="buttonBox">
-      <button id="fatalityAll" class="control-button fatality-button active">All</button>
-      <button id="fatalityUnknown" class="control-button fatality-button">Unknown</button>
-      <button id="fatalityViolence" class="control-button fatality-button">Violence</button>
-      <button id="fatalityDrowning" class="control-button fatality-button">Drowning</button>
-      <button id="fatalityHarsh" class="control-button fatality-button">Harsh environment conditions</button>
-      <button id="fatalityAccident" class="control-button fatality-button">Accidental death</button>
-      <button id="fatalitySickness" class="control-button fatality-button">Sickness</button>
-      <button id="fatalityVehicle" class="control-button fatality-button">Vehicle accident</button>
-    </div>
   </div>
 
-  <div class="control-section">
-    <h2>Gender</h2>
-    <div class="buttonBox">
-    <button id="genderAll" class="control-button gender-button active">All</button>
-    <button id="genderMen" class="control-button gender-button">Men</button>
-    <button id="genderWomen" class="control-button gender-button">Women</button>
-    <button id="genderChildren" class="control-button gender-button">Children</button>
-  </div>
-</div>
-  </div>
-</div>
-
-<div id="legendPanel">
-  <h2>Groups of People</h2>
-  <div id="legendContent">
+  <div id="legendPanel">
+    <h2>Groups of People</h2>
+    <div id="legendContent">
       <!-- Linke Spalte mit den Kreisen -->
       <div class="legend-circles">
-          <div class="circle" style="background-color: #8b0000;"></div> <!-- Dunkelstes Rot -->
-          <div class="circle" style="background-color: #ff4500;"></div> <!-- Mittleres Rot -->
-          <div class="circle" style="background-color: #ffa500;"></div> <!-- Helles Gelb-Orange -->
+        <div class="circle" style="background-color: #FF8C00;"></div> <!-- Dunkelstes Rot -->
+        <div class="circle" style="background-color: #FF2400;"></div> <!-- Mittleres Rot -->
+        <div class="circle" style="background-color: #B00000;"></div> <!-- Helles Gelb-Orange -->
       </div>
       <!-- Rechte Spalte mit den Texten -->
       <div class="legend-text">
-          <p>1-9</p>
-          <p>10-23</p>
-          <p>24-93</p>
+        <p>1-9</p>
+        <p>10-23</p>
+        <p>24-93</p>
       </div>
+    </div>
   </div>
-</div>
 
-<div id="infoCard" class="infoCard">
-  <!-- Content for Pin 1 -->
-  <h2>Pin 1 Info</h2>
-  <p>This is the information for Pin 1.</p>
-</div>
+  <div id="infoCard" class="infoCard" style="display:none;">
+    <div>
+      <div class="headline">
+        <h2 class="heading">Darién-Gap (Kolumbien/Panama)</h2>
+      </div>
+      <div>
+        <span id="closeBtn" class="closeBtn">
+          <img src="./assets/close2.png" alt="Close" class="icon">
+        </span>
+        <span id="audioBtn" class="audioBtn">
+          <img src="./assets/soundOn.png" alt="Audio" class="icon">
+        </span> <!-- Lautsprecher-Icon -->
+      </div>
+      <audio id="audioPlayer" src="./sound/Darian.mp3"></audio> <!-- Dein MP3-Pfad -->
+    </div>
+    <div>
+      <hr>
+    </div>
+    <div class="mainContent">
+      <div class="bildContainer">
 
-<div id="infoCard2" class="infoCard" style="display:none;">
-  <!-- Content for Pin 2 -->
-  <h2>Pin 2 Info</h2>
-  <p>This is the information for Pin 2.</p>
-</div>
+        <img src="./assets/wald.svg" class="bild">
+      </div>
 
-<div id="infoCard3" class="infoCard" style="display:none;">
-  <!-- Content for Pin 3 -->
-  <h2>Pin 3 Info</h2>
-  <p>This is the information for Pin 3.</p>
-</div>
-
-
-  <div id="sliderPanel">
-      <button id="playPauseButton">
-        <span id="playIcon">▶</span>
-        <span id="pauseIcon" style="display:none;">⏸</span>
-      </button>
-      <input type="range" min="0" max="119" value="0" id="dateSlider" style="width: 70%;">
-      <span id="dateDisplay">January 2014</span>
+      <div class="content">
+        <p>The Darién Gap, a densely forested and nearly impassable region between Panama and Colombia, is a
+          perilous crossing attempted by many migrants fleeing various Latin American countries in hopes of
+          reaching the United States. The extreme weather conditions, thick vegetation, steep hills, dangerous
+          animals, the risk of disease, and the threat posed by criminal groups result in many migrants dying
+          or
+          suffering serious injuries during the journey.</p>
+      </div>
+      <div id="box">
+        <div class="additional-info">
+          <div>
+            <ul>
+              <li>
+                <h3 class="headingH3"> About 520,000 migrants </h3>
+                <p class="subText">crossed the Darién Gap between Colombia and Panama</p>
+              </li>
+              <li>
+                <h3 class="headingH3">
+                  One in five
+                </h3>
+                <p class="subText">
+                  migrants crossing is a child, under five years old​
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <ul>
+              <li>
+                <h3 class="headingH3">The Darién Gap</h3>
+                <p class="subText">is one of the most dangerous migration routes </p>
+              </li>
+              <li>
+                <h3 class="headingH3">Many migrants</h3>
+                <p class="subText">face violence, including robberies and sexual assaults​</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
+
+
+
+
+
+  <div id="infoCard2" class="infoCard" style="display:none;">
+    <div>
+      <div class="headline">
+        <h2 class="heading">Libya-Italy</h2>
+      </div>
+      <div>
+        <span id="closeBtn2" class="closeBtn">
+          <img src="./assets/close2.png" alt="Close" class="icon">
+        </span>
+        <span id="audioBtn2" class="audioBtn">
+          <img src="./assets/soundOn.png" alt="Audio" class="icon">
+        </span> <!-- Lautsprecher-Icon -->
+      </div>
+      <audio id="audioPlayer2" src="./sound/Libya-Italy.mp3"></audio> <!-- Dein MP3-Pfad -->
+    </div>
+    <div>
+      <hr>
+    </div>
+    <div class="mainContentNeu">
+      <div>
+        <h2 class="h2head">3 to 7 days</h2>
+      </div>
+      <div class="contentBox">
+        <div id="linkeSpalte">
+          <p>from Libya to Europe with boats</p>
+        </div>
+        <div class="contentNeu" id="rechteSpalte">
+          <p>Many migrants attempting to reach Europe find themselves in desperate situations off the coast of Libya,
+            often relying on rescues from European or private aid organizations. However, these rescue efforts are
+            frequently obstructed by the Libyan coastguard, which intercepts boats and returns many migrants to
+            so-called detention centers in Libya, where they live in inhumane conditions and are often subjected to
+            abuse​. <br> <br>
+
+            Reports indicate that these detention facilities are overcrowded and lack basic necessities such as food and
+            medical care. Migrants face severe human rights violations, including physical violence, sexual abuse, and
+            insufficient access to essential resources.</p>
+        </div>
+      </div>
+      <div class="bildContainerUnten">
+
+        <img src="./assets/boat.svg" class="bildUnten">
+      </div>
+    </div>
+  </div>
+
+  <div id="infoCard3" class="infoCard" style="display:none;">
+    <!-- Content for Pin 3 -->
+    <h2>Pin 3 Info</h2>
+    <p>This is the information for Pin 3.</p>
+  </div>
+
+  <div id="container1"></div>
+
+  <!-- Slider Container and Date Display -->
+  <div id="sliderContainer">
+    <button id="playPauseButton">▶</button>
+    <input type="range" id="timeSlider" min="0" max="119" value="119" step="1">
+</div>
+<div id="dateDisplay">December 2023</div>
+
+<script>
+    // Event-Listener für den Play/Pause-Button
+    document.getElementById('playPauseButton').addEventListener('click', function() {
+        window.location.href = 'globe.html'; // Leitet zu globe.html weiter
+    });
+</script>
+
 
   <!-- Script for the globe (script.js) -->
   <script src="js/script.js"></script>
   <script src="js/pins.js"></script>
+  <script src="js/card.js"></script>
 </body>
+
 </html>
