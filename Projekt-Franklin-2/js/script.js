@@ -1,9 +1,10 @@
 // Define months array
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November'];
 
-// Global variables to store all dots and current filter states
+// Global variables to store all dots, pins, and lines
 let allDots = [];
 let allPins = []; // Store all pins for visibility optimization
+let allLines = []; // Store all lines for visibility optimization
 let currentFatalityFilter = "All"; // Default to 'All'
 let currentGenderFilter = "All"; // Default to 'All'
 
@@ -55,8 +56,6 @@ scene.add(globe);
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = false; // Adds an inertia effect when dragging
 controls.dampingFactor = 0.05; // Strength of the damping effect
-
-
 
 // Raycaster and mouse vector
 const raycaster = new THREE.Raycaster();
@@ -113,22 +112,23 @@ function createLine(lat, lon) {
   const line = new THREE.Line(lineGeometry, lineMaterial);
   scene.add(line); // Add the line to the scene
 
+  allLines.push(line); // Add line to global array for visibility toggle
+
   // Create a larger invisible click area
   const clickAreaRadius = 0.1; // Adjust this value to make the click area larger
   const clickMeshGeometry = new THREE.CircleGeometry(clickAreaRadius, 32);
   const clickMeshMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, color: 0xffffff });
   const clickMesh = new THREE.Mesh(clickMeshGeometry, clickMeshMaterial);
-  clickMesh.position.copy(endPosition); // Positioniere das Click-Mesh
+  clickMesh.position.copy(endPosition); // Position the Click-Mesh
   scene.add(clickMesh);
 
   return endPosition; // Return the end position where the sprite will be placed
 }
 
-
 // Function to add pins as sprites
 function addPin(lat, lon, infoCardId) {
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load('../plus-icon.png', (texture) => {
+    textureLoader.load('./assets/plus-icon1.png', (texture) => {
         const spriteMaterial = new THREE.SpriteMaterial({
             map: texture,
             color: 0xffffff // Optional: color tint for the sprite
@@ -177,22 +177,25 @@ function addDots(data) {
     data.forEach(entry => {
         if (entry.Coordinates && entry["Total Number of Dead and Missing"] !== undefined) {
             const [lat, lon] = entry.Coordinates.split(',').map(coord => parseFloat(coord.trim())); // Split and parse coordinates
-
-            // Determine the size and color of the dot based on "Total Number of Dead and Missing"
+    
+            // Determine the size, color, and opacity of the dot based on "Total Number of Dead and Missing"
             const totalDeadMissing = entry["Total Number of Dead and Missing"];
-            let size = 0.002; // Default smaller size
-            let color = 0x8b0000; // Default darker red
-
+            let size = 0.004; // Default smaller size
+            let color = 0xFF8C00; // Default darker red FF8C00
+            let opacity = 0.4; // Default smaller opacity
+    
             if (totalDeadMissing >= 3 && totalDeadMissing <= 20) {
-                size = 0.005; // Medium size
-                color = 0xff4500; // Medium red
+                size = 0.008; // Medium size
+                color = 0xFF2400; // Medium red FF2400
+                opacity = 0.5; // Medium opacity
             } else if (totalDeadMissing > 20) {
-                size = 0.01; // Larger size
-                color = 0xff6347; // Brighter red
+                size = 0.015; // Larger size
+                color = 0xB00000; // Brighter red B00000
+                opacity = 0.6; // Higher opacity
             }
-
-            // Create a transparent dot with different colors based on size
-            const dotMaterial = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.6 });
+    
+            // Create a transparent dot with different colors and opacity based on size
+            const dotMaterial = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: opacity });
             const dotGeometry = new THREE.SphereGeometry(size, 8, 8); // Adjust size based on categories
             const dotMesh = new THREE.Mesh(dotGeometry, dotMaterial);
 
@@ -213,6 +216,25 @@ function addDots(data) {
         }
     });
 }
+
+// Event Listener für die Infobox-Pins und Linien Buttons
+document.getElementById('infoBoxOn').addEventListener('click', function() {
+    allPins.forEach(pin => {
+        pin.visible = true; // Alle Pins anzeigen
+    });
+    allLines.forEach(line => {
+        line.visible = true; // Alle Linien anzeigen
+    });
+});
+
+document.getElementById('infoBoxOff').addEventListener('click', function() {
+    allPins.forEach(pin => {
+        pin.visible = false; // Alle Pins ausblenden
+    });
+    allLines.forEach(line => {
+        line.visible = false; // Alle Linien ausblenden
+    });
+});
 
 // Function to apply both Fatality and Gender filters
 function applyFilters() {
@@ -325,8 +347,6 @@ function updatePinPosition() {
   });
 }
 
-
-
 // Raycasting for detecting mouse hover/click events
 function handleMouseMove(event) {
     // Calculate mouse position in normalized device coordinates
@@ -361,9 +381,17 @@ function handleMouseMove(event) {
 window.addEventListener('mousemove', handleMouseMove);
 
 // Example: Add 3 pins
-addPin(31.533201, -106.755627, "infoCard");
+addPin(7.849924, -77.338784, "infoCard");
 addPin(36.464997, 12.218554, "infoCard2");
-addPin(7.849924, -77.338784, "infoCard3");
+addPin(31.533201, -106.755627, "infoCard3");
+addPin(12.550100, 43.364947, "infoCard4");
+addPin(6.594084, 100.129032, "infoCard5");
+addPin(33.069955, 65.081393, "infoCard6");
+addPin(35.949492, -5.338285, "infoCard7");
+addPin(18.345977, -67.887911, "infoCard8");
+addPin(20.331137, 24.338912, "infoCard9");
+addPin(45.379565, 19.244666, "infoCard10");
+addPin(33.069955, 65.081393, "infoCard11");
 
 // Load data from data.json
 fetch('./data/data.json')
